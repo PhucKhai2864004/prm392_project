@@ -82,36 +82,36 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // Kiểm tra nếu người dùng là admin (email admin@example.com)
-        if (auth.currentUser?.email == "admin@example.com") {
-            // Thêm nút Admin vào layout
-            val adminButton = TextView(this)
-            adminButton.id = View.generateViewId()
-            adminButton.text = "Quản lý phim (Admin)"
-            adminButton.setTextColor(resources.getColor(R.color.cgv_red))
-            adminButton.setPadding(16, 16, 16, 16)
-            adminButton.setBackgroundResource(android.R.attr.selectableItemBackground)
-
-            // Thêm vào layout
-            val cardView = findViewById<View>(R.id.cardSettings)
-            if (cardView is androidx.cardview.widget.CardView) {
-                val linearLayout = cardView.getChildAt(0) as? android.widget.LinearLayout
-                linearLayout?.addView(adminButton, 0)
-
-                // Thêm đường kẻ dưới nút Admin
-                val divider = View(this)
-                divider.layoutParams = android.widget.LinearLayout.LayoutParams(
-                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                    1
-                )
-                divider.setBackgroundColor(resources.getColor(R.color.cgv_light_gray))
-                linearLayout?.addView(divider, 1)
-
-                // Thiết lập sự kiện click
-                adminButton.setOnClickListener {
-                    startActivity(Intent(this, AdminActivity::class.java))
-                }
-            }
-        }
+//        if (auth.currentUser?.email == "admin@example.com") {
+//            // Thêm nút Admin vào layout
+//            val adminButton = TextView(this)
+//            adminButton.id = View.generateViewId()
+//            adminButton.text = "Quản lý phim (Admin)"
+//            adminButton.setTextColor(resources.getColor(R.color.cgv_red))
+//            adminButton.setPadding(16, 16, 16, 16)
+//            adminButton.setBackgroundResource(android.R.attr.selectableItemBackground)
+//
+//            // Thêm vào layout
+//            val cardView = findViewById<View>(R.id.cardSettings)
+//            if (cardView is androidx.cardview.widget.CardView) {
+//                val linearLayout = cardView.getChildAt(0) as? android.widget.LinearLayout
+//                linearLayout?.addView(adminButton, 0)
+//
+//                // Thêm đường kẻ dưới nút Admin
+//                val divider = View(this)
+//                divider.layoutParams = android.widget.LinearLayout.LayoutParams(
+//                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+//                    1
+//                )
+//                divider.setBackgroundColor(resources.getColor(R.color.cgv_light_gray))
+//                linearLayout?.addView(divider, 1)
+//
+//                // Thiết lập sự kiện click
+//                adminButton.setOnClickListener {
+//                    startActivity(Intent(this, AdminActivity::class.java))
+//                }
+//            }
+//        }
     }
 
     private fun loadUserProfile() {
