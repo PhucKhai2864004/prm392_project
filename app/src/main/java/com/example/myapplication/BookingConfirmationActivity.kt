@@ -39,6 +39,7 @@ class BookingConfirmationActivity : AppCompatActivity() {
 
         // Thiết lập nút hoàn tất
         findViewById<Button>(R.id.btnDone).setOnClickListener {
+            // Chuyển về MainActivity và xóa tất cả các activity trước đó
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
@@ -87,7 +88,17 @@ class BookingConfirmationActivity : AppCompatActivity() {
         // findViewById<ImageView>(R.id.ivQrCode).setImageBitmap(qrCode)
     }
 
+    // Ghi đè phương thức onBackPressed để ngăn người dùng quay lại màn hình thanh toán
+//    override fun onBackPressed() {
+//        // Chuyển về MainActivity thay vì quay lại màn hình trước đó
+//        val intent = Intent(this, MainActivity::class.java)
+//        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+//        startActivity(intent)
+//        finish()
+//    }
+
     override fun onSupportNavigateUp(): Boolean {
+        // Xử lý khi người dùng nhấn nút back trên toolbar
         onBackPressed()
         return true
     }

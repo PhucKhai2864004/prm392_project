@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.Showtime
+import java.text.NumberFormat
+import java.util.Locale
 
 class ShowtimeAdapter(
     private val showtimes: List<Showtime>,
@@ -28,7 +30,12 @@ class ShowtimeAdapter(
         val showtime = showtimes[position]
 
         holder.tvTime.text = showtime.time
-        holder.tvAvailableSeats.text = "${showtime.availableSeats.size} seats available"
+
+        // Định dạng giá vé theo VND
+        val formatter = NumberFormat.getNumberInstance(Locale("vi", "VN"))
+        val priceText = "${formatter.format(showtime.price)} VND"
+
+        holder.tvAvailableSeats.text = "${showtime.availableSeats.size} ghế trống - ${priceText}"
 
         holder.itemView.setOnClickListener {
             onShowtimeClick(showtime)

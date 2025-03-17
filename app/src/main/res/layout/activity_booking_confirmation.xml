@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/cgv_red"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Booking Confirmation"
+        app:title="Xác nhận đặt vé"
         app:titleTextColor="@color/white" />
 
     <ScrollView
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Booking Successful!"
+                android:text="Đặt vé thành công!"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Your tickets have been booked successfully."
+                android:text="Vé của bạn đã được đặt thành công."
                 android:textColor="@color/cgv_text_gray"
                 android:textSize="16sp" />
 
@@ -71,7 +71,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Booking Details"
+                        android:text="Chi tiết đặt vé"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -92,7 +92,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Booking ID:"
+                            android:text="Mã đặt vé:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -117,7 +117,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Movie:"
+                            android:text="Phim:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -126,7 +126,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:text="Movie Title"
+                            android:text="Tên phim"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -141,7 +141,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Cinema:"
+                            android:text="Rạp:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -150,7 +150,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:text="Cinema Name"
+                            android:text="Tên rạp"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -165,7 +165,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Date:"
+                            android:text="Ngày:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -174,7 +174,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:text="01 Jan 2023"
+                            android:text="01/01/2023"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -189,7 +189,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Time:"
+                            android:text="Giờ:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -198,7 +198,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:text="7:30 PM"
+                            android:text="19:30"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -213,7 +213,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Seats:"
+                            android:text="Ghế:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -237,7 +237,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Amount Paid:"
+                            android:text="Số tiền:"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -246,7 +246,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:text="$31.50"
+                            android:text="315.000 VND"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -269,7 +269,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="QR Code"
+                        android:text="Mã QR"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -287,7 +287,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:gravity="center"
-                        android:text="Show this QR code at the cinema"
+                        android:text="Xuất trình mã QR này tại rạp"
                         android:textColor="@color/cgv_text_gray"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -301,7 +301,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@drawable/button_red"
-        android:text="Done"
+        android:text="Hoàn tất"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent" />

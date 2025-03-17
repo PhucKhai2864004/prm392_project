@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -10,10 +11,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.myapplication.model.Showtime
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
 import java.util.Locale
 
 class SeatSelectionActivity : AppCompatActivity() {
+
+    private val db = Firebase.firestore
 
     private lateinit var gridSeats: GridLayout
     private lateinit var tvSelectedSeats: TextView
@@ -21,7 +27,7 @@ class SeatSelectionActivity : AppCompatActivity() {
     private lateinit var btnProceed: Button
 
     private val selectedSeats = mutableListOf<String>()
-    private val seatPrice = 100000.0  // Giá vé 100,000 VND
+    private var seatPrice = 100000.0  // Giá vé mặc định 100,000 VND
 
     private lateinit var movieId: String
     private lateinit var movieTitle: String
@@ -60,7 +66,7 @@ class SeatSelectionActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvShowInfo).text = "$cinemaName | $showDate | $showTime"
 
         // Generate seats
-        generateSeats()
+        loadSeatsFromFirestore()
 
         // Set up proceed button
         btnProceed.setOnClickListener {
@@ -83,7 +89,51 @@ class SeatSelectionActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateSeats() {
+    // Thêm onResume để tải lại dữ liệu mỗi khi activity được hiển thị
+    override fun onResume() {
+        super.onResume()
+        // Tải lại dữ liệu ghế mỗi khi activity được hiển thị lại
+        loadSeatsFromFirestore()
+    }
+
+    private fun loadSeatsFromFirestore() {
+        // Xóa tất cả ghế hiện tại
+        gridSeats.removeAllViews()
+        selectedSeats.clear()
+        tvSelectedSeats.text = "Chưa chọn"
+        tvTotalAmount.text = "0 VND"
+
+        // Tải dữ liệu từ Firestore
+        db.collection("showtimes").document(showtimeId)
+            .get()
+            .addOnSuccessListener { document ->
+                var bookedSeats = listOf<String>()
+
+                if (document != null && document.exists()) {
+                    val showtime = document.toObject(Showtime::class.java)
+                    showtime?.let {
+                        bookedSeats = it.bookedSeats
+                        seatPrice = it.price
+                        Log.d("SeatSelection", "Loaded booked seats: $bookedSeats")
+                    }
+                } else {
+                    Log.d("SeatSelection", "No showtime found, using default booked seats")
+                    // Nếu không tìm thấy suất chiếu, sử dụng danh sách ghế đã đặt mặc định
+                    bookedSeats = listOf("A1", "A2", "B5", "C7", "D3", "D4", "E8", "F2", "G5", "H10")
+                }
+
+                // Tạo ghế
+                generateSeats(bookedSeats)
+            }
+            .addOnFailureListener { e ->
+                Log.e("SeatSelection", "Error loading showtime: ${e.message}")
+                // Nếu có lỗi, sử dụng danh sách ghế đã đặt mặc định
+                val bookedSeats = listOf("A1", "A2", "B5", "C7", "D3", "D4", "E8", "F2", "G5", "H10")
+                generateSeats(bookedSeats)
+            }
+    }
+
+    private fun generateSeats(bookedSeats: List<String>) {
         val rows = 8
         val cols = 10
         val seatSize = resources.getDimensionPixelSize(R.dimen.seat_size)
@@ -93,9 +143,7 @@ class SeatSelectionActivity : AppCompatActivity() {
         gridSeats.columnCount = cols + 1  // +1 cho cột nhãn hàng
         gridSeats.rowCount = rows  // Đặt số hàng
 
-        // Some random booked seats for demonstration
-        val bookedSeats = listOf("A1", "A2", "B5", "C7", "D3", "D4", "E8", "F2", "G5", "H10")
-
+        // Tạo ghế
         for (i in 0 until rows) {
             val rowChar = ('A' + i).toString()
 

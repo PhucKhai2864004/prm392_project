@@ -3,6 +3,8 @@ package com.example.myapplication
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +26,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvEmail: TextView
     private lateinit var rvBookings: RecyclerView
     private lateinit var tvNoBookings: TextView
+    private lateinit var btnAdminPanel: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,24 @@ class ProfileActivity : AppCompatActivity() {
         rvBookings = findViewById(R.id.rvBookings)
         tvNoBookings = findViewById(R.id.tvNoBookings)
 
+        // Thêm nút Admin Panel nếu là admin
+        if (auth.currentUser?.email == "admin@example.com") {
+            btnAdminPanel = Button(this)
+            btnAdminPanel.text = "Quản lý phim (Admin)"
+            btnAdminPanel.setBackgroundColor(resources.getColor(R.color.cgv_red))
+            btnAdminPanel.setTextColor(resources.getColor(R.color.white))
+            btnAdminPanel.setPadding(16, 16, 16, 16)
+
+            // Thêm vào layout
+            val settingsSection = findViewById<LinearLayout>(R.id.settingsSection)
+            settingsSection.addView(btnAdminPanel, 0)
+
+            // Thiết lập sự kiện click
+            btnAdminPanel.setOnClickListener {
+                startActivity(Intent(this, AdminActivity::class.java))
+            }
+        }
+
         // Load user profile
         loadUserProfile()
 
@@ -66,52 +87,20 @@ class ProfileActivity : AppCompatActivity() {
 
         // Set up other buttons
         findViewById<TextView>(R.id.tvSettings).setOnClickListener {
-            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Cài đặt", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<TextView>(R.id.tvPaymentMethods).setOnClickListener {
-            Toast.makeText(this, "Payment Methods clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Phương thức thanh toán", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<TextView>(R.id.tvNotifications).setOnClickListener {
-            Toast.makeText(this, "Notifications clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Thông báo", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<TextView>(R.id.tvHelp).setOnClickListener {
-            Toast.makeText(this, "Help & Support clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Trợ giúp & Hỗ trợ", Toast.LENGTH_SHORT).show()
         }
-
-        // Kiểm tra nếu người dùng là admin (email admin@example.com)
-//        if (auth.currentUser?.email == "admin@example.com") {
-//            // Thêm nút Admin vào layout
-//            val adminButton = TextView(this)
-//            adminButton.id = View.generateViewId()
-//            adminButton.text = "Quản lý phim (Admin)"
-//            adminButton.setTextColor(resources.getColor(R.color.cgv_red))
-//            adminButton.setPadding(16, 16, 16, 16)
-//            adminButton.setBackgroundResource(android.R.attr.selectableItemBackground)
-//
-//            // Thêm vào layout
-//            val cardView = findViewById<View>(R.id.cardSettings)
-//            if (cardView is androidx.cardview.widget.CardView) {
-//                val linearLayout = cardView.getChildAt(0) as? android.widget.LinearLayout
-//                linearLayout?.addView(adminButton, 0)
-//
-//                // Thêm đường kẻ dưới nút Admin
-//                val divider = View(this)
-//                divider.layoutParams = android.widget.LinearLayout.LayoutParams(
-//                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-//                    1
-//                )
-//                divider.setBackgroundColor(resources.getColor(R.color.cgv_light_gray))
-//                linearLayout?.addView(divider, 1)
-//
-//                // Thiết lập sự kiện click
-//                adminButton.setOnClickListener {
-//                    startActivity(Intent(this, AdminActivity::class.java))
-//                }
-//            }
-//        }
     }
 
     private fun loadUserProfile() {
@@ -129,7 +118,7 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error loading profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Lỗi khi tải thông tin: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -158,7 +147,7 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error loading bookings: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Lỗi khi tải đơn đặt vé: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }

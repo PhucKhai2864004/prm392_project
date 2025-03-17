@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/cgv_red"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Select Seats"
+        app:title="Chọn ghế"
         app:titleTextColor="@color/white" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Movie Title"
+        android:text="Tên phim"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Cinema Name | Date | Time"
+        android:text="Tên rạp | Ngày | Giờ"
         android:textColor="@color/cgv_text_gray"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
         android:id="@+id/tvScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SCREEN"
+        android:text="MÀN HÌNH"
         android:textColor="@color/cgv_text_gray"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/viewScreen"
@@ -130,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Available"
+                android:text="Trống"
                 android:textColor="@color/cgv_text_gray"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -151,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Selected"
+                android:text="Đã chọn"
                 android:textColor="@color/cgv_text_gray"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -172,7 +172,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Booked"
+                android:text="Đã đặt"
                 android:textColor="@color/cgv_text_gray"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -196,7 +196,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Selected Seats:"
+                android:text="Ghế đã chọn:"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -204,7 +204,7 @@
                 android:id="@+id/tvSelectedSeats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="None"
+                android:text="Chưa chọn"
                 android:textColor="@color/cgv_red"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -220,7 +220,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Total Amount:"
+                android:text="Tổng tiền:"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -228,7 +228,7 @@
                 android:id="@+id/tvTotalAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$0.00"
+                android:text="0 VND"
                 android:textColor="@color/cgv_red"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -240,7 +240,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/button_red"
-            android:text="Proceed to Payment"
+            android:text="Tiếp tục thanh toán"
             android:textAllCaps="false"
             android:textColor="@color/white" />
     </LinearLayout>

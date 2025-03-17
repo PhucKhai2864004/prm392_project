@@ -66,7 +66,7 @@
                         android:id="@+id/tvMovieTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Movie Title"
+                        android:text="Tên phim"
                         android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -81,7 +81,7 @@
                             android:id="@+id/tvMovieGenre"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Action, Adventure"
+                            android:text="Thể loại"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -98,7 +98,7 @@
                             android:id="@+id/tvMovieDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="120 min"
+                            android:text="120 phút"
                             android:textColor="@color/cgv_text_gray"
                             android:textSize="14sp" />
 
@@ -120,7 +120,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Release Date"
+                                android:text="Ngày khởi chiếu"
                                 android:textColor="@color/cgv_text_gray"
                                 android:textSize="12sp" />
 
@@ -129,7 +129,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="01 Jan 2023"
+                                android:text="01/01/2023"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -145,7 +145,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Rating"
+                                android:text="Xếp hạng"
                                 android:textColor="@color/cgv_text_gray"
                                 android:textSize="12sp" />
 
@@ -154,7 +154,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="PG-13"
+                                android:text="13+"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -206,7 +206,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Synopsis"
+                        android:text="Nội dung phim"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -216,7 +216,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Movie synopsis goes here..."
+                        android:text="Nội dung phim sẽ hiển thị ở đây..."
                         android:textColor="@color/cgv_text_gray"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -240,7 +240,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Cast"
+                        android:text="Diễn viên"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -273,7 +273,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Showtimes"
+                        android:text="Lịch chiếu"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -295,7 +295,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Select Cinema"
+                        android:text="Chọn rạp"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -312,7 +312,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Available Times"
+                        android:text="Suất chiếu"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -336,7 +336,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
         android:background="@drawable/button_red"
-        android:text="Book Tickets"
+        android:text="Đặt vé"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 

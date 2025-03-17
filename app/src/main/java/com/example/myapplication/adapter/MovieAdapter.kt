@@ -7,8 +7,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.model.Movie
+import com.example.myapplication.utils.ImageCache
 
 class MovieAdapter(
     private val movies: List<Movie>,
@@ -37,9 +39,18 @@ class MovieAdapter(
         holder.tvGenre.text = movie.genre
         holder.tvDuration.text = movie.duration
 
-        // In a real app, you would use a library like Glide or Picasso to load images
-        // For simplicity, we're using placeholder images
-        // Glide.with(holder.itemView.context).load(movie.posterUrl).into(holder.ivPoster)
+        // Sử dụng ImageCache để tải hình ảnh
+        if (movie.posterUrl.isNotEmpty()) {
+            ImageCache.loadImageWithoutCache(
+                holder.itemView.context,
+                movie.posterUrl,
+                holder.ivPoster,
+                R.drawable.ic_launcher_background,
+                R.drawable.ic_launcher_foreground
+            )
+        } else {
+            holder.ivPoster.setImageResource(R.drawable.ic_launcher_background)
+        }
 
         holder.itemView.setOnClickListener {
             onMovieClick(movie)
@@ -52,4 +63,6 @@ class MovieAdapter(
 
     override fun getItemCount() = movies.size
 }
+
+
 

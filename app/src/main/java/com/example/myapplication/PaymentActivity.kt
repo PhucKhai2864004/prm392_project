@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+import com.example.myapplication.model.Showtime
 
 class PaymentActivity : AppCompatActivity() {
 
@@ -148,7 +149,81 @@ class PaymentActivity : AppCompatActivity() {
             status = "Đã xác nhận"
         )
 
-        // Lưu đơn đặt vé vào Firestore
+        // Cập nhật danh sách ghế đã đặt trong Firestore
+        val showtimeRef = db.collection("showtimes").document(showtimeId)
+
+        db.runTransaction { transaction ->
+            // Lấy dữ liệu showtime hiện tại
+            val snapshot = transaction.get(showtimeRef)
+            val showtime = snapshot.toObject(Showtime::class.java)
+
+            if (showtime != null) {
+                // Tạo danh sách ghế đã đặt mới
+                val updatedBookedSeats = ArrayList(showtime.bookedSeats)
+                updatedBookedSeats.addAll(selectedSeats)
+
+                // Tạo danh sách ghế còn trống mới
+                val updatedAvailableSeats = ArrayList(showtime.availableSeats)
+                updatedAvailableSeats.removeAll(selectedSeats.toSet())
+
+                // Cập nhật Showtime trong transaction
+                transaction.update(showtimeRef, "bookedSeats", updatedBookedSeats)
+                transaction.update(showtimeRef, "availableSeats", updatedAvailableSeats)
+            } else {
+                // Nếu không tìm thấy showtime, tạo mới
+                val newShowtime = Showtime(
+                    id = showtimeId,
+                    movieId = movieId,
+                    cinemaId = cinemaId,
+                    date = showDateObj,
+                    time = showTime,
+                    bookedSeats = selectedSeats.toList(),
+                    availableSeats = generateAllSeats().filter { !selectedSeats.contains(it) },
+                    price = seatPrice
+                )
+                transaction.set(showtimeRef, newShowtime)
+            }
+
+            // Lưu booking trong cùng transaction
+            val bookingRef = db.collection("bookings").document(bookingId)
+            transaction.set(bookingRef, booking)
+
+            // Trả về null để hoàn thành transaction
+            null
+        }.addOnSuccessListener {
+            // Transaction thành công
+            // Chuyển đến màn hình xác nhận đặt vé
+            val intent = Intent(this, BookingConfirmationActivity::class.java)
+            intent.putExtra("BOOKING_ID", bookingId)
+            // Thêm flag để xóa tất cả các activity trước đó trong stack
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }.addOnFailureListener { e ->
+            // Transaction thất bại
+            Toast.makeText(this, "Lỗi khi xử lý đặt vé: ${e.message}", Toast.LENGTH_SHORT).show()
+            findViewById<Button>(R.id.btnConfirmPayment).isEnabled = true
+            findViewById<Button>(R.id.btnConfirmPayment).text = "Xác nhận thanh toán"
+        }
+    }
+
+    // Thêm phương thức để tạo danh sách tất cả các ghế
+    private fun generateAllSeats(): List<String> {
+        val allSeats = mutableListOf<String>()
+        val rows = 8
+        val cols = 10
+
+        for (i in 0 until rows) {
+            val rowChar = ('A' + i).toString()
+            for (j in 1..cols) {
+                allSeats.add("$rowChar$j")
+            }
+        }
+
+        return allSeats
+    }
+
+    private fun saveBooking(booking: Booking, bookingId: String) {
         db.collection("bookings").document(bookingId)
             .set(booking)
             .addOnSuccessListener {

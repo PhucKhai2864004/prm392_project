@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Movie Title"
+                android:text="Tên phim"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Action, Adventure"
+                android:text="Thể loại"
                 android:textColor="@color/cgv_text_gray"
                 android:textSize="12sp" />
 
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="120 min"
+                android:text="120 phút"
                 android:textColor="@color/cgv_text_gray"
                 android:textSize="12sp" />
 
@@ -62,7 +62,7 @@
                 android:layout_height="36dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/button_red"
-                android:text="Book Now"
+                android:text="Đặt vé"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="12sp" />

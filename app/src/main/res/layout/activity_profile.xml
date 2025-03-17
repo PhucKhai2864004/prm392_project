@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/cgv_red"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="My Profile"
+        app:title="Tài khoản của tôi"
         app:titleTextColor="@color/white" />
 
     <ScrollView
@@ -55,7 +55,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:gravity="center"
-                        android:text="User Name"
+                        android:text="Tên người dùng"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -79,7 +79,7 @@
                         android:background="@drawable/button_red"
                         android:paddingStart="24dp"
                         android:paddingEnd="24dp"
-                        android:text="Edit Profile"
+                        android:text="Chỉnh sửa hồ sơ"
                         android:textAllCaps="false"
                         android:textColor="@color/white" />
                 </LinearLayout>
@@ -101,7 +101,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:text="My Bookings"
+                        android:text="Vé của tôi"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -124,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:padding="24dp"
-                        android:text="No bookings found"
+                        android:text="Không có vé nào"
                         android:textColor="@color/cgv_text_gray"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -138,6 +138,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
+                    android:id="@+id/settingsSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -149,7 +150,7 @@
                         android:background="?attr/selectableItemBackground"
                         android:drawableEnd="@android:drawable/ic_menu_more"
                         android:padding="16dp"
-                        android:text="Settings"
+                        android:text="Cài đặt"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -165,7 +166,7 @@
                         android:background="?attr/selectableItemBackground"
                         android:drawableEnd="@android:drawable/ic_menu_more"
                         android:padding="16dp"
-                        android:text="Payment Methods"
+                        android:text="Phương thức thanh toán"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -181,7 +182,7 @@
                         android:background="?attr/selectableItemBackground"
                         android:drawableEnd="@android:drawable/ic_menu_more"
                         android:padding="16dp"
-                        android:text="Notifications"
+                        android:text="Thông báo"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -197,7 +198,7 @@
                         android:background="?attr/selectableItemBackground"
                         android:drawableEnd="@android:drawable/ic_menu_more"
                         android:padding="16dp"
-                        android:text="Help and Support"
+                        android:text="Trợ giúp và Hỗ trợ"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -212,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackground"
                         android:padding="16dp"
-                        android:text="Logout"
+                        android:text="Đăng xuất"
                         android:textColor="@color/cgv_red"
                         android:textSize="16sp" />
                 </LinearLayout>

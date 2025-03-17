@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.Movie
+import com.example.myapplication.utils.ImageCache
 
 class AdminMovieAdapter(
     private var movies: List<Movie>,
@@ -40,8 +41,18 @@ class AdminMovieAdapter(
         holder.tvDuration.text = movie.duration
         holder.tvStatus.text = if (movie.nowShowing) "Đang chiếu" else "Sắp chiếu"
 
-        // In a real app, you would use Glide to load the movie poster
-        // Glide.with(holder.itemView.context).load(movie.posterUrl).into(holder.ivPoster)
+        // Sử dụng ImageCache để tải hình ảnh
+        if (movie.posterUrl.isNotEmpty()) {
+            ImageCache.loadImageWithoutCache(
+                holder.itemView.context,
+                movie.posterUrl,
+                holder.ivPoster,
+                R.drawable.ic_launcher_background,
+                R.drawable.ic_launcher_foreground
+            )
+        } else {
+            holder.ivPoster.setImageResource(R.drawable.ic_launcher_background)
+        }
 
         holder.btnEdit.setOnClickListener {
             onEditClick(movie)

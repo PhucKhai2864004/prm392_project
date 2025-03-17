@@ -89,7 +89,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Now Showing"
+                        android:text="Phim đang chiếu"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -98,7 +98,7 @@
                         android:id="@+id/tvViewAllNowShowing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View All"
+                        android:text="Xem tất cả"
                         android:textColor="@color/cgv_red"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -133,7 +133,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Coming Soon"
+                        android:text="Phim sắp chiếu"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -142,7 +142,7 @@
                         android:id="@+id/tvViewAllComingSoon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View All"
+                        android:text="Xem tất cả"
                         android:textColor="@color/cgv_red"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -172,7 +172,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Promotions"
+                    android:text="Khuyến mãi"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
