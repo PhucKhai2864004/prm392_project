@@ -23,6 +23,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+import android.widget.Button
 
 class MovieDetailActivity : AppCompatActivity() {
 
@@ -32,6 +33,8 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var rvCast: RecyclerView
     private lateinit var rvShowtimes: RecyclerView
     private lateinit var spinnerCinema: Spinner
+    private lateinit var tvNoShowtimes: TextView
+    private lateinit var btnBookTickets: Button
 
     private lateinit var selectedCinema: Cinema
     private lateinit var selectedDate: Date
@@ -58,14 +61,16 @@ class MovieDetailActivity : AppCompatActivity() {
         rvCast = findViewById(R.id.rvCast)
         rvShowtimes = findViewById(R.id.rvShowtimes)
         spinnerCinema = findViewById(R.id.spinnerCinema)
+        tvNoShowtimes = findViewById(R.id.tvNoShowtimes)
+        btnBookTickets = findViewById(R.id.btnBookTickets)
 
         // Tải thông tin phim
         loadMovieDetails(movieId)
 
         // Thiết lập nút đặt vé
-        findViewById<View>(R.id.btnBookTickets).setOnClickListener {
+        btnBookTickets.setOnClickListener {
             if (!::selectedCinema.isInitialized || showtimes.isEmpty()) {
-                Toast.makeText(this, "Vui lòng chọn rạp và suất chiếu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có lịch chiếu nào cho phim này", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -119,48 +124,15 @@ class MovieDetailActivity : AppCompatActivity() {
                     setupDates()
                 } else {
                     Log.e("MovieDetailActivity", "Movie not found in Firestore with ID: $movieId")
-                    // Nếu không tìm thấy trong Firestore, thử tìm trong dữ liệu giả lập
-                    loadMovieDetailsFromDummyData(movieId)
+                    Toast.makeText(this, "Không tìm thấy phim", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
             .addOnFailureListener { e ->
                 Log.e("MovieDetailActivity", "Error loading movie: ${e.message}")
-                // Nếu có lỗi khi truy vấn Firestore, thử tìm trong dữ liệu giả lập
-                loadMovieDetailsFromDummyData(movieId)
+                Toast.makeText(this, "Lỗi khi tải thông tin phim: ${e.message}", Toast.LENGTH_SHORT).show()
+                finish()
             }
-    }
-
-    private fun loadMovieDetailsFromDummyData(movieId: String) {
-        // Dữ liệu phim mẫu
-        val dummyMovies = listOf(
-            Movie("1", "Avengers: Endgame", "Hành động, Phiêu lưu", "180 phút", ""),
-            Movie("2", "Joker", "Tội phạm, Kịch", "122 phút", ""),
-            Movie("3", "Parasite", "Kịch, Kinh dị", "132 phút", ""),
-            Movie("4", "1917", "Kịch, Chiến tranh", "119 phút", "")
-        )
-
-        // Tìm phim theo ID
-        val foundMovie = dummyMovies.find { it.id == movieId }
-        if (foundMovie != null) {
-            movie = foundMovie
-
-            // Update UI with movie details
-            findViewById<TextView>(R.id.tvMovieTitle).text = movie.title
-            findViewById<TextView>(R.id.tvMovieGenre).text = movie.genre
-            findViewById<TextView>(R.id.tvMovieDuration).text = movie.duration
-
-            // Load cast data
-            loadCastData()
-
-            // Load cinema data
-            loadCinemaData()
-
-            // Setup dates
-            setupDates()
-        } else {
-            Toast.makeText(this, "Không tìm thấy phim", Toast.LENGTH_SHORT).show()
-            finish()
-        }
     }
 
     private fun loadCastData() {
@@ -223,26 +195,8 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
 
                 if (cinemas.isEmpty()) {
-                    // Nếu không có dữ liệu rạp, thêm dữ liệu mẫu
-                    val dummyCinemas = listOf(
-                        Cinema("1", "CGV Vincom Center", "Số 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP.HCM", "TP.HCM", "1900 6017"),
-                        Cinema("2", "CGV Aeon Mall Bình Tân", "Số 1 đường số 17A, Bình Trị Đông B, Bình Tân, TP.HCM", "TP.HCM", "1900 6017"),
-                        Cinema("3", "CGV Crescent Mall", "Tầng 5, Crescent Mall, 101 Tôn Dật Tiên, Tân Phú, Quận 7, TP.HCM", "TP.HCM", "1900 6017")
-                    )
-
-                    // Thêm dữ liệu mẫu vào Firestore
-                    for (cinema in dummyCinemas) {
-                        db.collection("cinemas").document(cinema.id)
-                            .set(cinema)
-                            .addOnSuccessListener {
-                                Log.d("MovieDetailActivity", "Cinema added: ${cinema.name}")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("MovieDetailActivity", "Error adding cinema: ${e.message}")
-                            }
-                    }
-
-                    cinemas.addAll(dummyCinemas)
+                    // Hiển thị thông báo nếu không có rạp phim
+                    Toast.makeText(this, "Không có rạp phim nào", Toast.LENGTH_SHORT).show()
                 }
 
                 // Thiết lập spinner rạp
@@ -273,36 +227,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("MovieDetailActivity", "Error loading cinemas: ${e.message}")
-
-                // Sử dụng dữ liệu mẫu nếu có lỗi
-                val dummyCinemas = listOf(
-                    Cinema("1", "CGV Vincom Center", "Số 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP.HCM", "TP.HCM", "1900 6017"),
-                    Cinema("2", "CGV Aeon Mall Bình Tân", "Số 1 đường số 17A, Bình Trị Đông B, Bình Tân, TP.HCM", "TP.HCM", "1900 6017"),
-                    Cinema("3", "CGV Crescent Mall", "Tầng 5, Crescent Mall, 101 Tôn Dật Tiên, Tân Phú, Quận 7, TP.HCM", "TP.HCM", "1900 6017")
-                )
-
-                selectedCinema = dummyCinemas[0]
-
-                // Tạo adapter cho spinner
-                val adapter = android.widget.ArrayAdapter(
-                    this,
-                    android.R.layout.simple_spinner_item,
-                    dummyCinemas.map { it.name }
-                )
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerCinema.adapter = adapter
-
-                // Thiết lập sự kiện khi chọn rạp
-                spinnerCinema.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        selectedCinema = dummyCinemas[position]
-                        loadShowtimes(selectedCinema.id, selectedDate)
-                    }
-
-                    override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {
-                        // Do nothing
-                    }
-                }
+                Toast.makeText(this, "Lỗi khi tải danh sách rạp: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -378,208 +303,57 @@ class MovieDetailActivity : AppCompatActivity() {
             .whereEqualTo("cinemaId", cinemaId)
             .get()
             .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    // Lọc các suất chiếu theo ngày
-                    val showtimesList = documents.toObjects(Showtime::class.java)
-                        .filter {
-                            val showtimeDate = it.date
-                            dateFormat.format(showtimeDate) == dateStr
-                        }
-
-                    if (showtimesList.isNotEmpty()) {
-                        showtimes = showtimesList
-
-                        // Cập nhật UI với danh sách suất chiếu
-                        val adapter = com.example.myapplication.adapter.ShowtimeAdapter(showtimes) { showtime ->
-                            val intent = Intent(this, SeatSelectionActivity::class.java)
-                            intent.putExtra("MOVIE_ID", movie.id)
-                            intent.putExtra("MOVIE_TITLE", movie.title)
-                            intent.putExtra("CINEMA_ID", selectedCinema.id)
-                            intent.putExtra("CINEMA_NAME", selectedCinema.name)
-                            intent.putExtra("SHOWTIME_ID", showtime.id)
-                            intent.putExtra("SHOW_DATE", SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(selectedDate))
-                            intent.putExtra("SHOW_TIME", showtime.time)
-                            startActivity(intent)
-                        }
-                        rvShowtimes.adapter = adapter
-                        return@addOnSuccessListener
+                // Lọc các suất chiếu theo ngày
+                val showtimesList = documents.toObjects(Showtime::class.java)
+                    .filter {
+                        val showtimeDate = it.date
+                        dateFormat.format(showtimeDate) == dateStr
                     }
+
+                if (showtimesList.isNotEmpty()) {
+                    // Có lịch chiếu
+                    showtimes = showtimesList
+
+                    // Cập nhật UI với danh sách suất chiếu
+                    val adapter = com.example.myapplication.adapter.ShowtimeAdapter(showtimes) { showtime ->
+                        val intent = Intent(this, SeatSelectionActivity::class.java)
+                        intent.putExtra("MOVIE_ID", movie.id)
+                        intent.putExtra("MOVIE_TITLE", movie.title)
+                        intent.putExtra("CINEMA_ID", selectedCinema.id)
+                        intent.putExtra("CINEMA_NAME", selectedCinema.name)
+                        intent.putExtra("SHOWTIME_ID", showtime.id)
+                        intent.putExtra("SHOW_DATE", SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(selectedDate))
+                        intent.putExtra("SHOW_TIME", showtime.time)
+                        startActivity(intent)
+                    }
+                    rvShowtimes.adapter = adapter
+                    rvShowtimes.visibility = View.VISIBLE
+                    tvNoShowtimes.visibility = View.GONE
+                    btnBookTickets.isEnabled = true
+                } else {
+                    // Không có lịch chiếu
+                    showtimes = listOf()
+                    rvShowtimes.adapter = null
+                    rvShowtimes.visibility = View.GONE
+                    tvNoShowtimes.visibility = View.VISIBLE
+                    btnBookTickets.isEnabled = false
                 }
-
-                // Nếu không tìm thấy suất chiếu trong Firestore, tạo suất chiếu mẫu
-                setupShowtimes()
-
-                // Sử dụng dữ liệu mẫu
-                val dummyShowtimes = listOf(
-                    Showtime("1", movie.id, cinemaId, date, "10:00", generateAvailableSeats(), listOf("A1", "A2"), 100000.0),
-                    Showtime("2", movie.id, cinemaId, date, "13:30", generateAvailableSeats(), listOf("B5", "C7"), 100000.0),
-                    Showtime("3", movie.id, cinemaId, date, "16:00", generateAvailableSeats(), listOf("D3", "D4"), 100000.0),
-                    Showtime("4", movie.id, cinemaId, date, "19:30", generateAvailableSeats(), listOf("E8", "F2"), 120000.0),
-                    Showtime("5", movie.id, cinemaId, date, "22:00", generateAvailableSeats(), listOf("G5", "H10"), 120000.0)
-                )
-
-                showtimes = dummyShowtimes
-
-                // Cập nhật UI với danh sách suất chiếu mẫu
-                val adapter = com.example.myapplication.adapter.ShowtimeAdapter(showtimes) { showtime ->
-                    val intent = Intent(this, SeatSelectionActivity::class.java)
-                    intent.putExtra("MOVIE_ID", movie.id)
-                    intent.putExtra("MOVIE_TITLE", movie.title)
-                    intent.putExtra("CINEMA_ID", selectedCinema.id)
-                    intent.putExtra("CINEMA_NAME", selectedCinema.name)
-                    intent.putExtra("SHOWTIME_ID", showtime.id)
-                    intent.putExtra("SHOW_DATE", SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(selectedDate))
-                    intent.putExtra("SHOW_TIME", showtime.time)
-                    startActivity(intent)
-                }
-                rvShowtimes.adapter = adapter
             }
             .addOnFailureListener { e ->
                 Log.e("MovieDetailActivity", "Error loading showtimes: ${e.message}")
+                Toast.makeText(this, "Lỗi khi tải lịch chiếu: ${e.message}", Toast.LENGTH_SHORT).show()
 
-                // Sử dụng dữ liệu mẫu nếu có lỗi
-                val dummyShowtimes = listOf(
-                    Showtime("1", movie.id, cinemaId, date, "10:00", generateAvailableSeats(), listOf("A1", "A2"), 100000.0),
-                    Showtime("2", movie.id, cinemaId, date, "13:30", generateAvailableSeats(), listOf("B5", "C7"), 100000.0),
-                    Showtime("3", movie.id, cinemaId, date, "16:00", generateAvailableSeats(), listOf("D3", "D4"), 100000.0),
-                    Showtime("4", movie.id, cinemaId, date, "19:30", generateAvailableSeats(), listOf("E8", "F2"), 120000.0),
-                    Showtime("5", movie.id, cinemaId, date, "22:00", generateAvailableSeats(), listOf("G5", "H10"), 120000.0)
-                )
-
-                showtimes = dummyShowtimes
-
-                // Cập nhật UI với danh sách suất chiếu mẫu
-                val adapter = com.example.myapplication.adapter.ShowtimeAdapter(showtimes) { showtime ->
-                    val intent = Intent(this, SeatSelectionActivity::class.java)
-                    intent.putExtra("MOVIE_ID", movie.id)
-                    intent.putExtra("MOVIE_TITLE", movie.title)
-                    intent.putExtra("CINEMA_ID", selectedCinema.id)
-                    intent.putExtra("CINEMA_NAME", selectedCinema.name)
-                    intent.putExtra("SHOWTIME_ID", showtime.id)
-                    intent.putExtra("SHOW_DATE", SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(selectedDate))
-                    intent.putExtra("SHOW_TIME", showtime.time)
-                    startActivity(intent)
-                }
-                rvShowtimes.adapter = adapter
+                // Không có lịch chiếu
+                showtimes = listOf()
+                rvShowtimes.adapter = null
+                rvShowtimes.visibility = View.GONE
+                tvNoShowtimes.visibility = View.VISIBLE
+                btnBookTickets.isEnabled = false
             }
-    }
-
-    // Thêm phương thức setupShowtimes
-    private fun setupShowtimes() {
-        // Tạo các suất chiếu mẫu nếu chưa có trong Firestore
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
-        // Tạo danh sách tất cả các ghế
-        val allSeats = generateAllSeats()
-
-        // Tạo một số ghế đã đặt ngẫu nhiên
-        val randomBookedSeats = listOf("A1", "A2", "B5", "C7", "D3", "D4", "E8", "F2", "G5", "H10")
-
-        // Tạo danh sách ghế còn trống
-        val availableSeats = allSeats.filter { !randomBookedSeats.contains(it) }
-
-        // Tạo các suất chiếu cho 7 ngày tới
-        for (i in 0 until 7) {
-            val date = calendar.time
-            val dateStr = dateFormat.format(date)
-
-            // Tạo các suất chiếu cho ngày này
-            val showtimes = listOf(
-                Showtime(
-                    id = "showtime_${movie.id}_${dateStr}_1000",
-                    movieId = movie.id,
-                    cinemaId = "1",
-                    date = date,
-                    time = "10:00",
-                    availableSeats = availableSeats,
-                    bookedSeats = randomBookedSeats,
-                    price = 100000.0
-                ),
-                Showtime(
-                    id = "showtime_${movie.id}_${dateStr}_1330",
-                    movieId = movie.id,
-                    cinemaId = "1",
-                    date = date,
-                    time = "13:30",
-                    availableSeats = availableSeats,
-                    bookedSeats = randomBookedSeats,
-                    price = 100000.0
-                ),
-                Showtime(
-                    id = "showtime_${movie.id}_${dateStr}_1600",
-                    movieId = movie.id,
-                    cinemaId = "1",
-                    date = date,
-                    time = "16:00",
-                    availableSeats = availableSeats,
-                    bookedSeats = randomBookedSeats,
-                    price = 100000.0
-                ),
-                Showtime(
-                    id = "showtime_${movie.id}_${dateStr}_1930",
-                    movieId = movie.id,
-                    cinemaId = "1",
-                    date = date,
-                    time = "19:30",
-                    availableSeats = availableSeats,
-                    bookedSeats = randomBookedSeats,
-                    price = 120000.0
-                ),
-                Showtime(
-                    id = "showtime_${movie.id}_${dateStr}_2200",
-                    movieId = movie.id,
-                    cinemaId = "1",
-                    date = date,
-                    time = "22:00",
-                    availableSeats = availableSeats,
-                    bookedSeats = randomBookedSeats,
-                    price = 120000.0
-                )
-            )
-
-            // Lưu các suất chiếu vào Firestore
-            for (showtime in showtimes) {
-                db.collection("showtimes").document(showtime.id)
-                    .set(showtime)
-                    .addOnSuccessListener {
-                        Log.d("MovieDetailActivity", "Showtime added: ${showtime.id}")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("MovieDetailActivity", "Error adding showtime: ${e.message}")
-                    }
-            }
-
-            // Chuyển đến ngày tiếp theo
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-    }
-
-    // Thêm phương thức để tạo danh sách tất cả các ghế
-    private fun generateAllSeats(): List<String> {
-        val allSeats = mutableListOf<String>()
-        val rows = 8
-        val cols = 10
-
-        for (i in 0 until rows) {
-            val rowChar = ('A' + i).toString()
-            for (j in 1..cols) {
-                allSeats.add("$rowChar$j")
-            }
-        }
-
-        return allSeats
-    }
-
-    // Thêm phương thức để tạo danh sách ghế còn trống
-    private fun generateAvailableSeats(): List<String> {
-        val allSeats = generateAllSeats()
-        val bookedSeats = listOf("A1", "A2", "B5", "C7", "D3", "D4", "E8", "F2", "G5", "H10")
-        return allSeats.filter { !bookedSeats.contains(it) }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-   }
+    }
 }

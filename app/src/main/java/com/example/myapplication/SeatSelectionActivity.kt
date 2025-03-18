@@ -118,7 +118,7 @@ class SeatSelectionActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d("SeatSelection", "No showtime found, using default booked seats")
-                    // Nếu không tìm thấy suất chiếu, sử dụng danh sách ghế đã đặt mặc định
+                    // Nếu không tìm thấy suất chiếu, sử dụng danh s��ch ghế đã đặt mặc định
                     bookedSeats = listOf("A1", "A2", "B5", "C7", "D3", "D4", "E8", "F2", "G5", "H10")
                 }
 
@@ -222,3 +222,4 @@ class SeatSelectionActivity : AppCompatActivity() {
         return true
     }
 }
+

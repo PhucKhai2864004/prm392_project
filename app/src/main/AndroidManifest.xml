@@ -62,6 +62,30 @@
             android:theme="@style/Theme.MyApplication.NoActionBar"
             android:exported="false" />
 
+        <activity
+            android:name=".CinemaManagementActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
+
+        <activity
+            android:name=".ShowtimeManagementActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
+
+        <activity
+            android:name=".MovieListActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
+
+        <activity
+            android:name=".CinemaListActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
+
+        <activity
+            android:name=".CinemaDetailActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
     </application>
 
 

@@ -1,28 +1,29 @@
 package com.example.myapplication
 
 import android.app.AlertDialog
-import android.icu.text.SimpleDateFormat
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.myapplication.adapter.AdminMovieAdapter
 import com.example.myapplication.model.Movie
+import com.example.myapplication.utils.ImageCache
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.UUID
-import java.util.Locale
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 class AdminActivity : AppCompatActivity() {
 
@@ -30,14 +31,14 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var rvMovies: RecyclerView
     private lateinit var tvNoMovies: TextView
     private lateinit var fabAddMovie: FloatingActionButton
-    private lateinit var adapter: AdminMovieAdapter
-    private var movies = mutableListOf<Movie>()
+
+    private val movies = mutableListOf<Movie>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)
 
-        // Thiết lập toolbar
+        // Thiết lập toolbar đúng cách
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -47,39 +48,18 @@ class AdminActivity : AppCompatActivity() {
         tvNoMovies = findViewById(R.id.tvNoMovies)
         fabAddMovie = findViewById(R.id.fabAddMovie)
 
-        // Thiết lập adapter
-        adapter = AdminMovieAdapter(
-            movies,
-            onEditClick = { movie ->
-                showAddEditMovieDialog(movie)
-            },
-            onDeleteClick = { movie ->
-                showDeleteConfirmationDialog(movie)
-            }
-        )
-        rvMovies.adapter = adapter
+        // Thêm nút quản lý rạp phim
+        findViewById<Button>(R.id.btnManageCinemas).setOnClickListener {
+            startActivity(Intent(this, CinemaManagementActivity::class.java))
+        }
 
-        // Tải danh sách phim
-        loadMovies()
-
-        // Đăng ký lắng nghe sự kiện cập nhật từ Firestore
-        db.collection("movies")
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    Log.w("AdminActivity", "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-
-                if (snapshots != null) {
-                    // Tải lại danh sách phim khi có thay đổi
-                    loadMovies()
-                }
-            }
-
-        // Thiết lập nút thêm phim
+        // Thiết lập sự kiện click cho nút thêm phim
         fabAddMovie.setOnClickListener {
             showAddEditMovieDialog(null)
         }
+
+        // Tải danh sách phim
+        loadMovies()
     }
 
     private fun loadMovies() {
@@ -98,11 +78,72 @@ class AdminActivity : AppCompatActivity() {
                 } else {
                     tvNoMovies.visibility = View.GONE
                     rvMovies.visibility = View.VISIBLE
-                    adapter.updateMovies(movies)
+
+                    // Hiển thị danh sách phim
+                    val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                        inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                            val ivPoster: ImageView = itemView.findViewById(R.id.ivMoviePoster)
+                            val tvTitle: TextView = itemView.findViewById(R.id.tvMovieTitle)
+                            val tvGenre: TextView = itemView.findViewById(R.id.tvMovieGenre)
+                            val tvDuration: TextView = itemView.findViewById(R.id.tvMovieDuration)
+                            val tvStatus: TextView = itemView.findViewById(R.id.tvMovieStatus)
+                            val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
+                            val btnDelete: Button = itemView.findViewById(R.id.btnDelete)
+                            val btnManageShowtimes: Button = itemView.findViewById(R.id.btnManageShowtimes)
+                        }
+
+                        override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                            val view = LayoutInflater.from(parent.context)
+                                .inflate(R.layout.item_admin_movie, parent, false)
+                            return MovieViewHolder(view)
+                        }
+
+                        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                            val movie = movies[position]
+                            val viewHolder = holder as MovieViewHolder
+
+                            viewHolder.tvTitle.text = movie.title
+                            viewHolder.tvGenre.text = movie.genre
+                            viewHolder.tvDuration.text = movie.duration
+                            viewHolder.tvStatus.text = if (movie.nowShowing) "Đang chiếu" else "Sắp chiếu"
+
+                            // Tải hình ảnh poster
+                            if (movie.posterUrl.isNotEmpty()) {
+                                ImageCache.loadImageWithoutCache(
+                                    this@AdminActivity,
+                                    movie.posterUrl,
+                                    viewHolder.ivPoster,
+                                    R.drawable.ic_launcher_background,
+                                    R.drawable.ic_launcher_foreground
+                                )
+                            } else {
+                                viewHolder.ivPoster.setImageResource(R.drawable.ic_launcher_background)
+                            }
+
+                            // Thiết lập sự kiện click cho nút sửa
+                            viewHolder.btnEdit.setOnClickListener {
+                                showAddEditMovieDialog(movie)
+                            }
+
+                            // Thiết lập sự kiện click cho nút xóa
+                            viewHolder.btnDelete.setOnClickListener {
+                                showDeleteMovieDialog(movie)
+                            }
+
+                            // Thiết lập sự kiện click cho nút quản lý lịch chiếu
+                            viewHolder.btnManageShowtimes.setOnClickListener {
+                                showManageShowtimesDialog(movie)
+                            }
+                        }
+
+                        override fun getItemCount(): Int = movies.size
+                    }
+
+                    rvMovies.adapter = adapter
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("AdminActivity", "Error loading movies", e)
+                Log.e("AdminActivity", "Error loading movies: ${e.message}")
                 Toast.makeText(this, "Lỗi khi tải danh sách phim: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -225,27 +266,19 @@ class AdminActivity : AppCompatActivity() {
         db.collection("movies").document(movie.id)
             .set(movie)
             .addOnSuccessListener {
-                val message = if (isEdit) "Cập nhật phim thành công" else "Thêm phim mới thành công"
+                val message = if (isEdit) "Phim đã được cập nhật" else "Phim đã được thêm"
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
-                // Xóa cache của Glide
-                Thread {
-                    Glide.get(applicationContext).clearDiskCache()
-                }.start()
-                Glide.get(applicationContext).clearMemory()
-
-                // Tải lại danh sách phim
                 loadMovies()
             }
             .addOnFailureListener { e ->
-                val action = if (isEdit) "cập nhật" else "thêm"
-                Toast.makeText(this, "Lỗi khi $action phim: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("AdminActivity", "Error saving movie: ${e.message}")
+                Toast.makeText(this, "Lỗi khi lưu phim: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun showDeleteConfirmationDialog(movie: Movie) {
+    private fun showDeleteMovieDialog(movie: Movie) {
         AlertDialog.Builder(this)
-            .setTitle("Xác nhận xóa")
+            .setTitle("Xóa phim")
             .setMessage("Bạn có chắc chắn muốn xóa phim '${movie.title}'?")
             .setPositiveButton("Xóa") { _, _ ->
                 deleteMovie(movie)
@@ -258,12 +291,21 @@ class AdminActivity : AppCompatActivity() {
         db.collection("movies").document(movie.id)
             .delete()
             .addOnSuccessListener {
-                Toast.makeText(this, "Xóa phim thành công", Toast.LENGTH_SHORT).show()
-                loadMovies() // Tải lại danh sách phim
+                Toast.makeText(this, "Phim đã được xóa", Toast.LENGTH_SHORT).show()
+                loadMovies()
             }
             .addOnFailureListener { e ->
+                Log.e("AdminActivity", "Error deleting movie: ${e.message}")
                 Toast.makeText(this, "Lỗi khi xóa phim: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun showManageShowtimesDialog(movie: Movie) {
+        // Chuyển đến màn hình quản lý lịch chiếu
+        val intent = android.content.Intent(this, ShowtimeManagementActivity::class.java)
+        intent.putExtra("MOVIE_ID", movie.id)
+        intent.putExtra("MOVIE_TITLE", movie.title)
+        startActivity(intent)
     }
 
     override fun onSupportNavigateUp(): Boolean {

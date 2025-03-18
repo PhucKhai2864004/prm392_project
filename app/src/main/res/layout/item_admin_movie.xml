@@ -103,6 +103,18 @@
                     android:text="Xóa"
                     android:textColor="@color/cgv_red"
                     android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnManageShowtimes"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:minWidth="0dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="Lịch chiếu"
+                    android:textColor="@color/cgv_red"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

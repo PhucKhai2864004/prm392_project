@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.adapter.BookingAdapter
 import com.example.myapplication.model.Booking
 import com.example.myapplication.model.User
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -27,6 +28,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var rvBookings: RecyclerView
     private lateinit var tvNoBookings: TextView
     private lateinit var btnAdminPanel: Button
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +55,10 @@ class ProfileActivity : AppCompatActivity() {
         tvEmail = findViewById(R.id.tvEmail)
         rvBookings = findViewById(R.id.rvBookings)
         tvNoBookings = findViewById(R.id.tvNoBookings)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
+
+        // Thiết lập bottom navigation
+        setupBottomNavigation()
 
         // Thêm nút Admin Panel nếu là admin
         if (auth.currentUser?.email == "admin@example.com") {
@@ -100,6 +106,34 @@ class ProfileActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.tvHelp).setOnClickListener {
             Toast.makeText(this, "Trợ giúp & Hỗ trợ", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        // Đánh dấu mục đang chọn
+        bottomNavigation.selectedItemId = R.id.nav_profile
+
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_cinemas -> {
+                    startActivity(Intent(this, CinemaListActivity::class.java))
+                    true
+                }
+                R.id.nav_tickets -> {
+                    // Đã ở trang profile, không cần chuyển
+                    true
+                }
+                R.id.nav_profile -> {
+                    // Đã ở trang profile, không cần chuyển
+                    true
+                }
+                else -> false
+            }
         }
     }
 
@@ -157,3 +191,4 @@ class ProfileActivity : AppCompatActivity() {
         return true
     }
 }
+
