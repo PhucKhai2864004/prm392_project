@@ -578,13 +578,8 @@ class MovieDetailActivity : AppCompatActivity() {
         return allSeats.filter { !bookedSeats.contains(it) }
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        onBackPressed()
-//
-//    }
-//
-//    override fun onSupportNavigateUp(): Boolean {
-//        onBackPressed()
-//        return true
-//    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+   }
 }

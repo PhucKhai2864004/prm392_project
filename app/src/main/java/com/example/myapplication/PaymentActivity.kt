@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.model.Booking
+import com.example.myapplication.model.Showtime
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -19,12 +21,24 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
-import com.example.myapplication.model.Showtime
 
 class PaymentActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
+
+    private lateinit var tvMovieTitle: TextView
+    private lateinit var tvCinema: TextView
+    private lateinit var tvDate: TextView
+    private lateinit var tvTime: TextView
+    private lateinit var tvSeats: TextView
+    private lateinit var tvTicketPrice: TextView
+    private lateinit var tvConvenienceFee: TextView
+    private lateinit var tvTotalAmount: TextView
+    private lateinit var radioGroupPayment: RadioGroup
+    private lateinit var layoutCardDetails: LinearLayout
+    private lateinit var layoutVNPay: LinearLayout
+    private lateinit var btnConfirmPayment: Button
 
     private lateinit var movieId: String
     private lateinit var movieTitle: String
@@ -35,9 +49,7 @@ class PaymentActivity : AppCompatActivity() {
     private lateinit var showTime: String
     private lateinit var selectedSeats: Array<String>
     private var totalAmount: Double = 0.0
-
-    private lateinit var layoutCardDetails: LinearLayout
-    private lateinit var layoutVNPay: LinearLayout
+    private var seatPrice: Double = 100000.0 // Giá vé mặc định
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +63,28 @@ class PaymentActivity : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = Firebase.auth
 
+        // Check if user is signed in
+        if (auth.currentUser == null) {
+            // Not signed in, launch the Login activity
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
+        // Initialize views
+        tvMovieTitle = findViewById(R.id.tvMovieTitle)
+        tvCinema = findViewById(R.id.tvCinema)
+        tvDate = findViewById(R.id.tvDate)
+        tvTime = findViewById(R.id.tvTime)
+        tvSeats = findViewById(R.id.tvSeats)
+        tvTicketPrice = findViewById(R.id.tvTicketPrice)
+        tvConvenienceFee = findViewById(R.id.tvConvenienceFee)
+        tvTotalAmount = findViewById(R.id.tvTotalAmount)
+        radioGroupPayment = findViewById(R.id.radioGroupPayment)
+        layoutCardDetails = findViewById(R.id.layoutCardDetails)
+        layoutVNPay = findViewById(R.id.layoutVNPay)
+        btnConfirmPayment = findViewById(R.id.btnConfirmPayment)
+
         // Get data from intent
         movieId = intent.getStringExtra("MOVIE_ID") ?: ""
         movieTitle = intent.getStringExtra("MOVIE_TITLE") ?: ""
@@ -59,55 +93,76 @@ class PaymentActivity : AppCompatActivity() {
         showtimeId = intent.getStringExtra("SHOWTIME_ID") ?: ""
         showDate = intent.getStringExtra("SHOW_DATE") ?: ""
         showTime = intent.getStringExtra("SHOW_TIME") ?: ""
-        selectedSeats = intent.getStringArrayExtra("SELECTED_SEATS") ?: emptyArray()
+        selectedSeats = intent.getStringArrayExtra("SELECTED_SEATS") ?: arrayOf()
         totalAmount = intent.getDoubleExtra("TOTAL_AMOUNT", 0.0)
 
-        // Khởi tạo views
-        layoutCardDetails = findViewById(R.id.layoutCardDetails)
-        layoutVNPay = findViewById(R.id.layoutVNPay)
+        // Lấy giá vé từ Firestore
+        db.collection("showtimes").document(showtimeId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val showtime = document.toObject(Showtime::class.java)
+                    showtime?.let {
+                        seatPrice = it.price
+                        updateUI()
+                    }
+                } else {
+                    updateUI()
+                }
+            }
+            .addOnFailureListener { e ->
+                updateUI()
+            }
 
-        // Cập nhật thông tin đặt vé
-        findViewById<TextView>(R.id.tvMovieTitle).text = movieTitle
-        findViewById<TextView>(R.id.tvCinema).text = cinemaName
-        findViewById<TextView>(R.id.tvDate).text = showDate
-        findViewById<TextView>(R.id.tvTime).text = showTime
-
-        findViewById<TextView>(R.id.tvSeats).text = selectedSeats.joinToString(", ")
-
-        // Định dạng tiền tệ VND
-        val formatter = NumberFormat.getNumberInstance(Locale("vi", "VN"))
-
-        // Cập nhật giá vé và phí dịch vụ
-        val seatPrice = 100000.0 // 100,000 VND
-        val convenienceFee = 15000.0 // 15,000 VND
-
-        findViewById<TextView>(R.id.tvTicketPrice).text = "${formatter.format(seatPrice)} VND x ${selectedSeats.size}"
-        findViewById<TextView>(R.id.tvConvenienceFee).text = "${formatter.format(convenienceFee)} VND"
-        findViewById<TextView>(R.id.tvTotalAmount).text = "${formatter.format(totalAmount + convenienceFee)} VND"
-
-        // Thiết lập lựa chọn phương thức thanh toán
-        val radioGroupPayment = findViewById<RadioGroup>(R.id.radioGroupPayment)
-
+        // Set up payment method selection
         radioGroupPayment.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.rbVNPay -> {
-                    layoutVNPay.visibility = View.VISIBLE
-                    layoutCardDetails.visibility = View.GONE
-                }
                 R.id.rbCreditCard -> {
-                    layoutVNPay.visibility = View.GONE
                     layoutCardDetails.visibility = View.VISIBLE
+                    layoutVNPay.visibility = View.GONE
                 }
                 else -> {
-                    layoutVNPay.visibility = View.GONE
                     layoutCardDetails.visibility = View.GONE
+                    layoutVNPay.visibility = View.VISIBLE
                 }
             }
         }
 
-        // Thiết lập nút xác nhận thanh toán
-        findViewById<Button>(R.id.btnConfirmPayment).setOnClickListener {
+        // Set up confirm payment button
+        btnConfirmPayment.setOnClickListener {
             processPayment()
+        }
+    }
+
+    private fun updateUI() {
+        tvMovieTitle.text = movieTitle
+        tvCinema.text = cinemaName
+        tvDate.text = showDate
+        tvTime.text = showTime
+        tvSeats.text = selectedSeats.joinToString(", ")
+
+        // Định dạng tiền tệ VND
+        val formatter = NumberFormat.getNumberInstance(Locale("vi", "VN"))
+
+        // Hiển thị giá vé
+        tvTicketPrice.text = "${formatter.format(seatPrice)} VND x ${selectedSeats.size}"
+
+        // Phí dịch vụ
+        val convenienceFee = 15000.0
+        tvConvenienceFee.text = "${formatter.format(convenienceFee)} VND"
+
+        // Tổng tiền
+        totalAmount = (seatPrice * selectedSeats.size) + convenienceFee
+        tvTotalAmount.text = "${formatter.format(totalAmount)} VND"
+    }
+
+    private fun getSelectedPaymentMethod(): String {
+        return when (radioGroupPayment.checkedRadioButtonId) {
+            R.id.rbVNPay -> "VNPay"
+            R.id.rbCreditCard -> "Credit Card"
+            R.id.rbMomo -> "MoMo"
+            R.id.rbZaloPay -> "ZaloPay"
+            else -> "VNPay"
         }
     }
 
@@ -221,34 +276,6 @@ class PaymentActivity : AppCompatActivity() {
         }
 
         return allSeats
-    }
-
-    private fun saveBooking(booking: Booking, bookingId: String) {
-        db.collection("bookings").document(bookingId)
-            .set(booking)
-            .addOnSuccessListener {
-                // Chuyển đến màn hình xác nhận đặt vé
-                val intent = Intent(this, BookingConfirmationActivity::class.java)
-                intent.putExtra("BOOKING_ID", bookingId)
-                startActivity(intent)
-                finish()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Lỗi khi tạo đơn đặt vé: ${e.message}", Toast.LENGTH_SHORT).show()
-                findViewById<Button>(R.id.btnConfirmPayment).isEnabled = true
-                findViewById<Button>(R.id.btnConfirmPayment).text = "Xác nhận thanh toán"
-            }
-    }
-
-    private fun getSelectedPaymentMethod(): String {
-        val radioGroupPayment = findViewById<RadioGroup>(R.id.radioGroupPayment)
-        return when (radioGroupPayment.checkedRadioButtonId) {
-            R.id.rbVNPay -> "VNPay"
-            R.id.rbCreditCard -> "Thẻ tín dụng/ghi nợ"
-            R.id.rbMomo -> "Ví MoMo"
-            R.id.rbZaloPay -> "ZaloPay"
-            else -> "VNPay"
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
