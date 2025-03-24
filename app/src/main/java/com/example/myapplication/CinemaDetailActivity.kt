@@ -82,7 +82,7 @@ class CinemaDetailActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_tickets -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                    startActivity(Intent(this, MyTicketsActivity::class.java))
                     true
                 }
                 R.id.nav_profile -> {
@@ -94,6 +94,7 @@ class CinemaDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Các phương thức khác giữ nguyên
     private fun loadCinemaDetails() {
         db.collection("cinemas").document(cinemaId)
             .get()

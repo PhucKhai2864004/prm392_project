@@ -19,6 +19,7 @@
             app:contentScrim="@color/cgv_red"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
+            app:title=""
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView

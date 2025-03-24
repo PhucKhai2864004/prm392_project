@@ -49,6 +49,20 @@ class MovieDetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // Tìm và xóa hoặc comment dòng code thêm text "Ticket booking app"
+        // Ví dụ:
+        // findViewById<TextView>(R.id.tvAppName).text = "Ticket booking app"
+        // hoặc
+        // binding.tvAppName.text = "Ticket booking app"
+        // hoặc
+        // supportActionBar?.title = "Ticket booking app"
+
+        // Nếu không tìm thấy, có thể nó được đặt trong CollapsingToolbarLayout
+        // Thêm dòng này vào phương thức onCreate() hoặc onCreateView():
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).title = ""
+        // hoặc
+        // supportActionBar?.title = ""
+
         // Lấy ID phim từ intent
         val movieId = intent.getStringExtra("MOVIE_ID") ?: ""
         if (movieId.isEmpty()) {
@@ -357,3 +371,4 @@ class MovieDetailActivity : AppCompatActivity() {
         return true
     }
 }
+

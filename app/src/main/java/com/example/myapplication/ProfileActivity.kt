@@ -8,9 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.adapter.BookingAdapter
-import com.example.myapplication.model.Booking
 import com.example.myapplication.model.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -25,8 +22,6 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var tvName: TextView
     private lateinit var tvEmail: TextView
-    private lateinit var rvBookings: RecyclerView
-    private lateinit var tvNoBookings: TextView
     private lateinit var btnAdminPanel: Button
     private lateinit var bottomNavigation: BottomNavigationView
 
@@ -53,8 +48,6 @@ class ProfileActivity : AppCompatActivity() {
         // Initialize views
         tvName = findViewById(R.id.tvName)
         tvEmail = findViewById(R.id.tvEmail)
-        rvBookings = findViewById(R.id.rvBookings)
-        tvNoBookings = findViewById(R.id.tvNoBookings)
         bottomNavigation = findViewById(R.id.bottomNavigation)
 
         // Thiết lập bottom navigation
@@ -81,9 +74,6 @@ class ProfileActivity : AppCompatActivity() {
         // Load user profile
         loadUserProfile()
 
-        // Load user bookings
-        loadUserBookings()
-
         // Set up logout button
         findViewById<TextView>(R.id.tvLogout).setOnClickListener {
             auth.signOut()
@@ -107,6 +97,11 @@ class ProfileActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvHelp).setOnClickListener {
             Toast.makeText(this, "Trợ giúp & Hỗ trợ", Toast.LENGTH_SHORT).show()
         }
+
+        // Thêm nút để xem vé
+        findViewById<TextView>(R.id.tvMyTickets).setOnClickListener {
+            startActivity(Intent(this, MyTicketsActivity::class.java))
+        }
     }
 
     private fun setupBottomNavigation() {
@@ -125,7 +120,7 @@ class ProfileActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_tickets -> {
-                    // Đã ở trang profile, không cần chuyển
+                    startActivity(Intent(this, MyTicketsActivity::class.java))
                     true
                 }
                 R.id.nav_profile -> {
@@ -153,35 +148,6 @@ class ProfileActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Lỗi khi tải thông tin: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-
-    private fun loadUserBookings() {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            db.collection("bookings")
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener { documents ->
-                    val bookings = documents.toObjects(Booking::class.java)
-                    if (bookings.isEmpty()) {
-                        tvNoBookings.visibility = View.VISIBLE
-                        rvBookings.visibility = View.GONE
-                    } else {
-                        tvNoBookings.visibility = View.GONE
-                        rvBookings.visibility = View.VISIBLE
-
-                        val adapter = BookingAdapter(bookings) { booking ->
-                            val intent = Intent(this, BookingConfirmationActivity::class.java)
-                            intent.putExtra("BOOKING_ID", booking.id)
-                            startActivity(intent)
-                        }
-                        rvBookings.adapter = adapter
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Lỗi khi tải đơn đặt vé: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }

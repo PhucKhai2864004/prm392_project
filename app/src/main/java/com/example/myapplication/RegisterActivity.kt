@@ -44,27 +44,27 @@ class RegisterActivity : AppCompatActivity() {
 
         // Validate input
         if (name.isEmpty()) {
-            binding.tilName.error = "Name is required"
+            binding.tilName.error = "Họ tên không được để trống"
             return
         }
 
         if (email.isEmpty()) {
-            binding.tilEmail.error = "Email is required"
+            binding.tilEmail.error = "Email không được để trống"
             return
         }
 
         if (password.isEmpty()) {
-            binding.tilPassword.error = "Password is required"
+            binding.tilPassword.error = "Mật khẩu không được để trống"
             return
         }
 
         if (password.length < 6) {
-            binding.tilPassword.error = "Password must be at least 6 characters"
+            binding.tilPassword.error = "Mật khẩu phải có ít nhất 6 ký tự"
             return
         }
 
         if (password != confirmPassword) {
-            binding.tilConfirmPassword.error = "Passwords do not match"
+            binding.tilConfirmPassword.error = "Mật khẩu xác nhận không khớp"
             return
         }
 
@@ -89,19 +89,19 @@ class RegisterActivity : AppCompatActivity() {
                             .set(user)
                             .addOnSuccessListener {
                                 binding.progressBar.visibility = View.GONE
-                                Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show()
                                 navigateToMainActivity()
                             }
                             .addOnFailureListener { e ->
                                 binding.progressBar.visibility = View.GONE
-                                Toast.makeText(this, "Error saving user data: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Lỗi khi lưu thông tin người dùng: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }
                 } else {
                     // If sign up fails, display a message to the user
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
-                        baseContext, "Registration failed: ${task.exception?.message}",
+                        baseContext, "Đăng ký thất bại: ${task.exception?.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -115,3 +115,4 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 }
+

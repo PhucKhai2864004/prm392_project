@@ -1,11 +1,13 @@
 package com.example.myapplication.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.TicketDetailActivity
 import com.example.myapplication.model.Booking
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -20,6 +22,7 @@ class BookingAdapter(
         val tvCinemaAndDate: TextView = view.findViewById(R.id.tvCinemaAndDate)
         val tvSeats: TextView = view.findViewById(R.id.tvSeats)
         val tvStatus: TextView = view.findViewById(R.id.tvStatus)
+        val tvViewTicket: TextView = view.findViewById(R.id.tvViewTicket)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookingViewHolder {
@@ -34,11 +37,19 @@ class BookingAdapter(
 
         holder.tvMovieTitle.text = booking.movieTitle
         holder.tvCinemaAndDate.text = "${booking.cinemaName} | ${dateFormat.format(booking.showDate)} | ${booking.showTime}"
-        holder.tvSeats.text = "Seats: ${booking.seats.joinToString(", ")}"
+        holder.tvSeats.text = "Ghế: ${booking.seats.joinToString(", ")}"
         holder.tvStatus.text = booking.status
 
         holder.itemView.setOnClickListener {
             onBookingClick(booking)
+        }
+
+        // Xử lý sự kiện khi bấm vào "Xem vé"
+        holder.tvViewTicket.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, TicketDetailActivity::class.java)
+            intent.putExtra("BOOKING_ID", booking.id)
+            context.startActivity(intent)
         }
     }
 

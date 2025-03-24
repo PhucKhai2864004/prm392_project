@@ -86,6 +86,16 @@
             android:name=".CinemaDetailActivity"
             android:theme="@style/Theme.MyApplication.NoActionBar"
             android:exported="false" />
+
+        <activity
+            android:name=".MyTicketsActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
+
+        <activity
+            android:name=".TicketDetailActivity"
+            android:theme="@style/Theme.MyApplication.NoActionBar"
+            android:exported="false" />
     </application>
 
 

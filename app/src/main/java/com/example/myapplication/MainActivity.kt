@@ -153,7 +153,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_tickets -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                    // Chuyển đến trang vé của tôi
+                    startActivity(Intent(this, MyTicketsActivity::class.java))
                     true
                 }
                 R.id.nav_profile -> {
@@ -165,3 +166,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+

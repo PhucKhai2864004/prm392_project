@@ -44,12 +44,12 @@ class LoginActivity : AppCompatActivity() {
 
         // Validate input
         if (email.isEmpty()) {
-            binding.tilEmail.error = "Email is required"
+            binding.tilEmail.error = "Email không được để trống"
             return
         }
 
         if (password.isEmpty()) {
-            binding.tilPassword.error = "Password is required"
+            binding.tilPassword.error = "Mật khẩu không được để trống"
             return
         }
 
@@ -62,12 +62,12 @@ class LoginActivity : AppCompatActivity() {
                 binding.progressBar.visibility = View.GONE
                 if (task.isSuccessful) {
                     // Sign in success
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
                     navigateToMainActivity()
                 } else {
                     // If sign in fails, display a message to the user
                     Toast.makeText(
-                        baseContext, "Authentication failed: ${task.exception?.message}",
+                        baseContext, "Đăng nhập thất bại: ${task.exception?.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -81,3 +81,4 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 }
+
